@@ -174,6 +174,8 @@ describe('Navigation Tests', () => {
     cy.visit('/');
     cy.wait('@allSkillEventsForUser');
 
+    cy.get('[data-cy="eventHistoryChart-animationEnded"]').should('exist');
+
     cy.get('[data-cy=numAchievedGlobalBadges]').should('not.exist')
     cy.get('[data-cy=numAchievedGemBadges]').contains('Gems: 0 / 1')
   })
@@ -233,6 +235,7 @@ describe('Navigation Tests', () => {
   it('visit My Progress page', function () {
     cy.visit('/');
     cy.wait('@allSkillEventsForUser');
+    cy.get('[data-cy="eventHistoryChart-animationEnded"]').should('exist');
 
     cy.get('[data-cy="breadcrumb-Progress And Rankings"]').contains('Progress And Rankings').should('be.visible');
 
@@ -288,6 +291,7 @@ describe('Navigation Tests', () => {
     cy.loginAsProxyUser();
     cy.visit('/');
     cy.wait('@allSkillEventsForUser');
+    cy.get('[data-cy="eventHistoryChart-animationEnded"]').should('exist');
 
     cy.get('[data-cy=numProjectsContributed]').contains(new RegExp(/^2$/));
     cy.get('[data-cy=numProjectsAvailable]').contains(new RegExp(/^\/ 2$/));
@@ -308,6 +312,7 @@ describe('Navigation Tests', () => {
     cy.loginAsProxyUser();
     cy.visit('/');
     cy.wait('@allSkillEventsForUser');
+    cy.get('[data-cy="eventHistoryChart-animationEnded"]').should('exist');
 
     cy.get('[data-cy=numProjectsContributed]').contains(new RegExp(/^1$/));
     cy.get('[data-cy=numProjectsAvailable]').contains(new RegExp(/^\/ 3$/));
@@ -318,6 +323,7 @@ describe('Navigation Tests', () => {
 
     cy.visit('/');
     cy.wait('@allSkillEventsForUser');
+    cy.get('[data-cy="eventHistoryChart-animationEnded"]').should('exist');
 
     cy.get('[data-cy=eventHistoryChart] [data-cy=timeLengthSelector]').contains('6 months').click();
     cy.wait('@allSkillEventsForUser');
@@ -359,6 +365,7 @@ describe('Navigation Tests', () => {
     cy.loginAsProxyUser();
     cy.visit('/');
     cy.wait('@allSkillEventsForUser');
+    cy.get('[data-cy="eventHistoryChart-animationEnded"]').should('exist');
 
     // validate 4 projects are loaded by default
     cy.get('[data-cy=eventHistoryChartProjectSelector]').contains('Inception').should('be.visible');
@@ -426,6 +433,7 @@ describe('Navigation Tests', () => {
     cy.loginAsProxyUser();
     cy.visit('/');
     cy.wait('@allSkillEventsForUser');
+    cy.get('[data-cy="eventHistoryChart-animationEnded"]').should('exist');
 
     cy.get('[data-cy=numProjectsContributed]').contains(new RegExp(/^1$/));
     cy.get('[data-cy=numProjectsAvailable]').contains(new RegExp(/^\/ 2$/));
@@ -521,6 +529,7 @@ describe('Navigation Tests', () => {
 
     cy.visit('/');
     cy.wait('@allSkillEventsForUser');
+    cy.get('[data-cy="eventHistoryChart-animationEnded"]').should('exist');
     cy.get('[data-cy=project-link-proj3]').find('[data-cy=project-card-project-rank]').contains(new RegExp(/^Rank: 1,001 \/ 1,001$/));
   });
 
