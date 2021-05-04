@@ -28,14 +28,21 @@ limitations under the License.
                   :hide-selected="true"
                   :max="5"
                   data-cy="eventHistoryChartProjectSelector"/>
-      <metrics-overlay :loading="loading" :has-data="hasData" :no-data-msg="noDataMessage">
-        <apexchart type="line" height="350"
-                  :ref="chartId"
-                  :options="chartOptions"
-                  :series="series">
-        </apexchart>
-        <span v-if="animationEnded" data-cy="eventHistoryChart-animationEnded"></span>
-      </metrics-overlay>
+
+      <div v-if="initLoading" class="text-center pt-2">
+        <b-spinner variant="info" label="Spinning" class="my-5"></b-spinner>
+      </div>
+      <div v-else>
+        <metrics-overlay :loading="loading" :has-data="hasData" :no-data-msg="noDataMessage">
+          <apexchart type="line" height="350"
+                     :ref="chartId"
+                     :options="chartOptions"
+                     :series="series">
+          </apexchart>
+          <span v-if="animationEnded" data-cy="eventHistoryChart-animationEnded"></span>
+        </metrics-overlay>
+      </div>
+
     </metrics-card>
   </div>
 </template>
@@ -72,6 +79,7 @@ limitations under the License.
     data() {
       return {
         chartId: this.title.replace(/\s+/g, ''),
+        initLoading: true,
         loading: true,
         hasData: false,
         mutableTitle: this.title,
@@ -116,6 +124,7 @@ limitations under the License.
           },
           stroke: {
             curve: 'smooth',
+            dashArray: [0, 0, 5, 0, 0],
           },
           markers: {
             size: 0,
@@ -151,14 +160,7 @@ limitations under the License.
       };
     },
     mounted() {
-      // assign consistent color and dash array options so they don't change when selecting different projects
-      const colorOptions = ['#2E93fA', '#66DA26', '#546E7A', '#FF9800'];
-      this.projects.available = this.availableProjects.map((proj, idx) => (
-        {
-          ...proj,
-          dashArray: (idx % 4) * 3, // alternate dashArray between 0, 3, 6, 9
-          color: colorOptions[(idx % 4)],
-        }));
+      this.projects.available = this.availableProjects.map((proj) => ({ ...proj }));
       const numProjectsToSelect = Math.min(this.availableProjects.length, 4);
       const availableSortedByMostPoints = this.projects.available.sort((a, b) => b.points - a.points);
       this.projects.selected = availableSortedByMostPoints.slice(0, numProjectsToSelect);
@@ -214,8 +216,6 @@ limitations under the License.
           MetricsService.loadMyMetrics('allProjectsSkillEventsOverTimeMetricsBuilder', this.props)
             .then((response) => {
               if (response && response.length > 0 && this.notAllZeros(response)) {
-                // eslint-disable-next-line
-                console.log('loadData() response');
                 this.hasData = true;
                 this.series = response.map((item) => {
                   const ret = {};
@@ -224,24 +224,17 @@ limitations under the License.
                   ret.data = item.countsByDay.map((it) => [it.timestamp, it.num]);
                   return ret;
                 });
-                const dashArray = this.series.map((item) => item.project.dashArray);
-                const colors = this.series.map((item) => item.project.color);
-                this.$refs[this.chartId].updateOptions({
-                  stroke: {
-                    dashArray,
-                    colors,
-                  },
-                  colors,
-                });
               } else {
                 this.series = [];
                 this.hasData = false;
               }
               this.loading = false;
+              this.initLoading = false;
             });
         } else {
           this.hasData = false;
           this.loading = false;
+          this.initLoading = false;
         }
       },
       notAllZeros(data) {
