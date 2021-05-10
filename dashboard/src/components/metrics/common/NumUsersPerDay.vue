@@ -57,7 +57,10 @@ limitations under the License.
       return {
         loading: true,
         initLoading: false,
-        distinctUsersOverTime: [],
+        distinctUsersOverTime: [{
+          name: 'Users',
+          data: [],
+        }],
         hasDataEnoughData: false,
         mutableTitle: this.title,
         props: {
@@ -163,9 +166,9 @@ limitations under the License.
           .then((response) => {
             if (response && response.length > 1 && !this.allZeros(response)) {
               this.hasDataEnoughData = true;
+              const newData = response.map((item) => [item.value, item.count]);
               this.distinctUsersOverTime = [{
-                data: response.map((item) => [item.value, item.count]),
-                name: 'Users',
+                data: newData,
               }];
             } else {
               this.distinctUsersOverTime = [];

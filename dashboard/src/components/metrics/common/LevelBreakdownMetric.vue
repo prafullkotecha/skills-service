@@ -56,7 +56,10 @@ limitations under the License.
         isLoading: true,
         initLoading: true,
         isEmpty: false,
-        series: [],
+        series: [{
+          name: 'Number of Users',
+          data: [],
+        }],
         chartOptions: {
           chart: {
             type: 'bar',
@@ -158,9 +161,9 @@ limitations under the License.
 
           this.isEmpty = response.find((item) => item.count > 0) === undefined;
           this.chartOptions.xaxis.categories = sorted.map((item) => item.value);
+          const newData = sorted.map((item) => item.count);
           this.series = [{
-            name: 'Number of Users',
-            data: sorted.map((item) => item.count),
+            data: newData,
           }];
           this.isLoading = false;
           this.initLoading = false;
