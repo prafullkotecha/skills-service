@@ -15,10 +15,15 @@ limitations under the License.
 */
 <template>
   <metrics-card title="Achievements over time" data-cy="numUsersAchievedOverTimeMetric">
-    <metrics-overlay :loading="loading" :has-data="hasData" no-data-msg="No achievements yet for this skill.">
-      <apexchart type="area" height="350" :options="chartOptions" :series="series"></apexchart>
-      <span v-if="animationEnded" data-cy="numUsersAchievedOverTimeMetric-animationEnded"></span>
-    </metrics-overlay>
+    <div v-if="initLoading" class="text-center pt-2">
+      <b-spinner variant="info" label="Spinning" class="my-5"></b-spinner>
+    </div>
+    <div v-else>
+      <metrics-overlay :loading="loading" :has-data="hasData" no-data-msg="No achievements yet for this skill.">
+        <apexchart type="area" height="350" :options="chartOptions" :series="series"></apexchart>
+        <span v-if="animationEnded" data-cy="numUsersAchievedOverTimeMetric-animationEnded"></span>
+      </metrics-overlay>
+    </div>
   </metrics-card>
 </template>
 
@@ -95,6 +100,7 @@ limitations under the License.
         },
         loading: true,
         hasData: false,
+        initLoading: true,
       };
     },
     mounted() {
@@ -118,6 +124,7 @@ limitations under the License.
               }];
             }
             this.loading = false;
+            this.initLoading = false;
           });
       },
       generateDayWiseTimeSeries(xValStart, count, yrange) {

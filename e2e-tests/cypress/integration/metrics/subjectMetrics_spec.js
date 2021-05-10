@@ -17,8 +17,6 @@ var moment = require('moment-timezone');
 
 describe('Metrics Tests - Subject', () => {
 
-    const waitForSnap = 4000;
-
     beforeEach(() => {
         cy.request('POST', '/app/projects/proj1', {
             projectId: 'proj1',
@@ -84,7 +82,7 @@ describe('Metrics Tests - Subject', () => {
         cy.clickNav('Metrics');
         cy.wait('@numUsersPerLevelChartBuilderSubj1');
 
-        cy.wait(waitForSnap);
+        cy.get('[data-cy=levelsChart-animationEnded]').should('exist');
         cy.matchSnapshotImageForElement('[data-cy=levelsChart]');
 
         cy.visit('/administrator/projects/proj1/subjects/subj2');
@@ -314,8 +312,7 @@ describe('Metrics Tests - Subject', () => {
         cy.visit('/administrator/projects/proj1/subjects/subj1');
         cy.clickNav('Metrics');
         cy.wait('@distinctUsersOverTimeForProject');
-
-        cy.wait(waitForSnap);
+        cy.get('[data-cy=distinctNumUsersOverTime-animationEnded]').should('exist');
         cy.matchSnapshotImageForElement('[data-cy=distinctNumUsersOverTime]');
     });
 

@@ -19,10 +19,16 @@ limitations under the License.
       <span class="text-muted ml-2">|</span>
       <time-length-selector :options="timeSelectorOptions" @time-selected="updateTimeRange"/>
     </template>
-    <metrics-overlay :loading="loading" :has-data="hasData" no-data-msg="This chart needs at least 2 days of user activity.">
-      <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
-    </metrics-overlay>
-    <div class="text-muted small">Please Note: Only 'applied' events contribute to users' points and achievements. An event will not be applied if that skill has already reached its maximum points or has unfulfilled dependencies.</div>
+    <div v-if="initLoading" class="text-center pt-2">
+      <b-spinner variant="info" label="Spinning" class="my-5"></b-spinner>
+    </div>
+    <div v-else>
+      <metrics-overlay :loading="loading" :has-data="hasData" no-data-msg="This chart needs at least 2 days of user activity.">
+        <apexchart type="line" height="350" :options="chartOptions" :series="series"></apexchart>
+        <span v-if="animationEnded" data-cy="appliedSkillEventsOverTimeMetric-animationEnded"></span>
+      </metrics-overlay>
+      <div class="text-muted small">Please Note: Only 'applied' events contribute to users' points and achievements. An event will not be applied if that skill has already reached its maximum points or has unfulfilled dependencies.</div>
+    </div>
   </metrics-card>
 </template>
 
@@ -33,6 +39,7 @@ limitations under the License.
   import MetricsService from '../MetricsService';
   import MetricsOverlay from '../utils/MetricsOverlay';
   import dayjs from '../../../DayJsCustomizer';
+  import ChartAnimEndedMixin from '../../utils/ChartAnimEndedMixin';
 
   export default {
     name: 'SkillEventsOverTime',
@@ -43,7 +50,11 @@ limitations under the License.
         title: 'Skill events',
         loading: true,
         hasData: false,
+        initLoading: true,
         series: [],
+        mixins: [
+          ChartAnimEndedMixin,
+        ],
         start: dayjs().subtract(30, 'day').valueOf(),
         timeSelectorOptions: [
           {
@@ -147,6 +158,7 @@ limitations under the License.
             this.hasData = Boolean(hasAllEvents | hasAppliedSkillEvents);
             this.series = s;
             this.loading = false;
+            this.initLoading = false;
           });
       },
       updateTimeRange(timeEvent) {

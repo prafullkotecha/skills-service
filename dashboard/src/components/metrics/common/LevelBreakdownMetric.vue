@@ -14,14 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 <template>
-  <metrics-card :title="title" :no-padding="true" data-cy="levelsChart" >
+  <metrics-card :title="title" :no-padding="true" data-cy="levelsChart">
+    <div v-if="initLoading" class="text-center pt-2">
+      <b-spinner variant="info" label="Spinning" class="my-5"></b-spinner>
+    </div>
+    <div v-else>
       <metrics-spinner v-if="isLoading"/>
       <apexchart v-if="!isLoading" type="bar" height="350" :options="chartOptions" :series="series" />
+      <span v-if="animationEnded" data-cy="levelsChart-animationEnded"/>
       <div v-if="!isLoading && isEmpty" class="card-img-overlay d-flex">
         <div class="my-auto mx-auto text-center">
           <div class="alert alert-info"><i class="fa fa-info-circle"/> No one reached <b-badge>Level 1</b-badge> yet...</div>
         </div>
       </div>
+    </div>
   </metrics-card>
 </template>
 
@@ -30,10 +36,14 @@ limitations under the License.
   import MetricsService from '../MetricsService';
   import MetricsSpinner from '../utils/MetricsSpinner';
   import MetricsCard from '../utils/MetricsCard';
+  import ChartAnimEndedMixin from '../../utils/ChartAnimEndedMixin';
 
   export default {
     name: 'LevelBreakdownMetric',
     components: { MetricsCard, MetricsSpinner },
+    mixins: [
+      ChartAnimEndedMixin,
+    ],
     props: {
       title: {
         type: String,
@@ -44,6 +54,7 @@ limitations under the License.
     data() {
       return {
         isLoading: true,
+        initLoading: true,
         isEmpty: false,
         series: [],
         chartOptions: {
@@ -152,6 +163,7 @@ limitations under the License.
             data: sorted.map((item) => item.count),
           }];
           this.isLoading = false;
+          this.initLoading = false;
         });
     },
   };

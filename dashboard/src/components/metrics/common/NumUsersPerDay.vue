@@ -19,9 +19,15 @@ limitations under the License.
       <span class="text-muted ml-2">|</span>
       <time-length-selector :options="timeSelectorOptions" @time-selected="updateTimeRange"/>
     </template>
-    <metrics-overlay :loading="loading" :has-data="hasDataEnoughData" no-data-msg="This chart needs at least 2 days of user activity.">
-      <apexchart type="area" height="350" :options="chartOptions" :series="distinctUsersOverTime" data-cy="apexchart"></apexchart>
-    </metrics-overlay>
+    <div v-if="initLoading" class="text-center pt-2">
+      <b-spinner variant="info" label="Spinning" class="my-5"></b-spinner>
+    </div>
+    <div v-else>
+      <metrics-overlay :loading="loading" :has-data="hasDataEnoughData" no-data-msg="This chart needs at least 2 days of user activity.">
+        <apexchart type="area" height="350" :options="chartOptions" :series="distinctUsersOverTime" data-cy="apexchart"></apexchart>
+        <span v-if="animationEnded" data-cy="distinctNumUsersOverTime-animationEnded"/>
+      </metrics-overlay>
+    </div>
   </metrics-card>
 </template>
 
@@ -32,6 +38,7 @@ limitations under the License.
   import MetricsCard from '../utils/MetricsCard';
   import TimeLengthSelector from './TimeLengthSelector';
   import dayjs from '../../../DayJsCustomizer';
+  import ChartAnimEndedMixin from '../../utils/ChartAnimEndedMixin';
 
   export default {
     name: 'NumUsersPerDay',
@@ -43,9 +50,13 @@ limitations under the License.
       },
     },
     components: { TimeLengthSelector, MetricsCard, MetricsOverlay },
+    mixins: [
+      ChartAnimEndedMixin,
+    ],
     data() {
       return {
         loading: true,
+        initLoading: false,
         distinctUsersOverTime: [],
         hasDataEnoughData: false,
         mutableTitle: this.title,
@@ -161,6 +172,9 @@ limitations under the License.
               this.hasDataEnoughData = false;
             }
             this.loading = false;
+            // eslint-disable-next-line
+            console.log('right before initLoading set to false');
+            this.initLoading = false;
           });
       },
     },
