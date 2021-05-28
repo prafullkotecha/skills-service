@@ -16,7 +16,6 @@
 var moment = require('moment-timezone');
 
 describe('Multiple Project Metrics', () => {
-    const waitForSnap = 4000;
     const multiProjSel = '[data-cy=multiProjectUsersInCommon]';
     const trainingProfSel = '[data-cy=trainingProfileComparator]';
 
@@ -193,7 +192,11 @@ describe('Multiple Project Metrics', () => {
         cy.trainingProf('[data-cy=numOfBadgesChart]').contains('Grand Project 1');
         cy.trainingProf('[data-cy=numOfBadgesChart]').contains('Grand Project 2');
 
-        cy.wait(waitForSnap);
+        cy.get('[data-cy="chart_NumberofSkills-animationEnded"]');
+        cy.get('[data-cy="chart_TotalAvailablePoints-animationEnded"]');
+        cy.get('[data-cy="chart_NumberofSubjects-animationEnded"]');
+        cy.get('[data-cy="chart_NumberofBadges-animationEnded"]');
+
         cy.matchSnapshotImageForElement(`${trainingProfSel} [data-cy=numOfSkillsChart]`, 'Project definitions comparison - Number of Skills chart');
         cy.matchSnapshotImageForElement(`${trainingProfSel} [data-cy=totalAvailablePointsChart]`, 'Project definitions comparison - Total Available Points');
         cy.matchSnapshotImageForElement(`${trainingProfSel} [data-cy=numOfSubjChart]`, 'Project definitions comparison - Number of Subjects chart');

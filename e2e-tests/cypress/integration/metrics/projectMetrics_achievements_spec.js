@@ -16,7 +16,6 @@
 var moment = require('moment-timezone');
 
 describe('Metrics Tests - Achievements', () => {
-    const waitForSnap = 4000;
 
     beforeEach(() => {
         cy.request('POST', '/app/projects/proj1', {

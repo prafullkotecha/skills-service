@@ -16,12 +16,12 @@ limitations under the License.
 <script>
   export default {
     name: 'ChartAnimEndedMixin',
-    watch: {
-      animationEnded() {
-        // eslint-disable-next-line
-        console.log('animationEnded was changed');
-      },
-    },
+    // watch: {
+    //   animationEnded() {
+    //     // eslint-disable-next-line
+    //     console.log('animationEnded was changed');
+    //   },
+    // },
     data() {
       return {
         animationEnded: false,
@@ -33,10 +33,10 @@ limitations under the License.
                 console.log('chart animation ended');
                 this.animationEnded = true;
               },
-              mounted: () => {
-                // eslint-disable-next-line
-                console.log('chart was mounted');
-              },
+              // mounted: () => {
+              //   // eslint-disable-next-line
+              //   console.log('chart was mounted');
+              // },
             },
           },
         },

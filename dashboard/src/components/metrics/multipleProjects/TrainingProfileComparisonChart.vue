@@ -21,19 +21,23 @@ limitations under the License.
         <apexchart v-if="!loading"
                    :ref="chartId"
                    type="bar" height="350"
-                   :options="options"
+                   :options="chartOptions"
                    :series="seriesInternal"/>
       </metrics-overlay>
+
+      <span v-if="animationEnded" :data-cy="`chart_${chartId}-animationEnded`"/>
     </div>
   </b-card>
 </template>
 
 <script>
+  import ChartAnimEndedMixin from '@/components/utils/ChartAnimEndedMixin';
   import numberFormatter from '@//filters/NumberFilter';
   import MetricsOverlay from '../utils/MetricsOverlay';
 
   export default {
     name: 'TrainingProfileComparisonChart',
+    mixins: [ChartAnimEndedMixin],
     components: { MetricsOverlay },
     props: {
       title: {
@@ -63,7 +67,7 @@ limitations under the License.
         loading: true,
         hasData: false,
         seriesInternal: [],
-        options: {
+        chartOptions: {
           chart: {
             type: 'bar',
             height: 350,
@@ -116,7 +120,7 @@ limitations under the License.
     },
     mounted() {
       if (!this.horizontal) {
-        this.options.fill = {
+        this.chartOptions.fill = {
           type: 'gradient',
           gradient: {
             shade: 'light',
